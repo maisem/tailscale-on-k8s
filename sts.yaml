@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tailscale
+  namespace: network
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: tailscale
+  serviceName: tailscale
+  template:
+    metadata:
+      labels:
+        app: tailscale
+    spec:
+      containers:
+      - imagePullPolicy: Always
+        name: tailscale
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+        volumeMounts:
+        - mountPath: /state
+          name: state
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        sysctls:
+        - name: net.ipv4.ip_forward
+          value: "1"
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: state
+        nfs:
+          path: /volume1/config/tailscale-statefulset
+          server: ""
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
+    type: RollingUpdate
