@@ -19,28 +19,22 @@ spec:
       containers:
       - imagePullPolicy: Always
         name: tailscale
+        image: ubuntu
+        args:
+        - while true; do sleep 30; done;
         securityContext:
           capabilities:
             add:
             - NET_ADMIN
-        volumeMounts:
-        - mountPath: /state
-          name: state
+        command:
+        - /bin/bash
+        - -c
+        - --
       nodeSelector:
         kubernetes.io/arch: amd64
       restartPolicy: Always
       schedulerName: default-scheduler
-      securityContext:
-        sysctls:
-        - name: net.ipv4.ip_forward
-          value: "1"
+      hostNetwork: true
       terminationGracePeriodSeconds: 30
-      volumes:
-      - name: state
-        nfs:
-          path: /volume1/config/tailscale-statefulset
-          server: ""
   updateStrategy:
-    rollingUpdate:
-      partition: 0
     type: RollingUpdate
