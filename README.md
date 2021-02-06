@@ -42,3 +42,14 @@ The current version of can be deployed as a StatefulSet:
     kubectl apply -f svc.yaml
     sed -e "s/{{DEST_IP}}/${DEST_IP}/g" sts.yaml | sed -e "s/{{ROUTES}}/${ROUTES:-}/g" | sed -e "s/{{IMAGE_TAG}}/${IMAGE_TAG}/g" | kubectl apply -f-
     ```
+    
+1. Grab the Tailscale IP from either the logs or the admin console.
+   ```
+   kubectl logs tailscale-0 | grep "Tailscale IP"
+   ```
+   
+1. Interact with your endpoint like you normally would:  
+   ```
+   e.g. if `DEST_IP` is `1.1.1.1`
+   dig google.com "@${TAILSCALE_IP}"
+   ```
