@@ -4,7 +4,6 @@ metadata:
   labels:
     app: tailscale
   name: tailscale
-  namespace: network
 spec:
   clusterIP: None
   selector:

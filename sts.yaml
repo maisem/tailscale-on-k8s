@@ -2,11 +2,9 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: tailscale
-  namespace: network
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1
-  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app: tailscale
@@ -32,12 +30,21 @@ spec:
       containers:
       - imagePullPolicy: Always
         name: tailscale
-        image: tailscale
+        image: "{{IMAGE_TAG}}"
+        volumeMounts:
+        - name: state
+          mountPath: /var/lib/tailscale
         env:
         - name: AUTH_KEY
-          value: ""
+          valueFrom:
+            secretKeyRef:
+              name: tailscale-auth
+              key: AUTH_KEY
+              optional: true
         - name: DEST_IP
-          value: ""
+          value: "{{DEST_IP}}"
+        - name: ROUTES
+          value: "{{ROUTES}}"
         securityContext:
           capabilities:
             add:
@@ -45,5 +52,13 @@ spec:
       restartPolicy: Always
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
+  volumeClaimTemplates:
+  - metadata:
+      name: state
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
   updateStrategy:
     type: RollingUpdate
