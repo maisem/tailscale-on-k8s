@@ -16,25 +16,34 @@ spec:
       labels:
         app: tailscale
     spec:
+      initContainers:
+      - name: sysctl-buddy
+        image: busybox:1.29
+        securityContext:
+          privileged: true
+        command: ["/bin/sh"]
+        args:
+          - -c
+          - sysctl -w net.ipv4.ip_forward=1
+        resources:
+          requests:
+            cpu: 1m
+            memory: 1Mi
       containers:
       - imagePullPolicy: Always
         name: tailscale
-        image: ubuntu
-        args:
-        - while true; do sleep 30; done;
+        image: tailscale
+        env:
+        - name: AUTH_KEY
+          value: ""
+        - name: DEST_IP
+          value: ""
         securityContext:
           capabilities:
             add:
             - NET_ADMIN
-        command:
-        - /bin/bash
-        - -c
-        - --
-      nodeSelector:
-        kubernetes.io/arch: amd64
       restartPolicy: Always
       schedulerName: default-scheduler
-      hostNetwork: true
       terminationGracePeriodSeconds: 30
   updateStrategy:
     type: RollingUpdate
