@@ -15,8 +15,8 @@ spec:
         app: tailscale
     spec:
       initContainers:
-      - name: sysctl-buddy
-        image: busybox:1.29
+      - name: sysctler
+        image: busybox
         securityContext:
           privileged: true
         command: ["/bin/sh"]
