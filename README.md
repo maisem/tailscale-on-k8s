@@ -29,18 +29,18 @@ The current version of can be deployed as a StatefulSet:
 
 1. Build and publish the container to your desired registry.
     ```
-    docker build . -t "${IMAGE_TAG}" && docker push "${IMAGE_TAG}"
+    make build && make push
     ```
 
-    From a Mac M1 you can use `docker buildx` to cross-compile for linux/amd64:
+    To cross compile for a different arch use:
     ```
-    docker buildx build --platform linux/amd64 --push -t "${IMAGE_TAG}" .
+    export ARCH=linux/arm64
+    make buildx && make push
     ```
 
 1. Create the StatefulSet
     ```
-    kubectl apply -f svc.yaml
-    sed -e "s/{{DEST_IP}}/${DEST_IP}/g" sts.yaml | sed -e "s/{{ROUTES}}/${ROUTES:-}/g" | sed -e "s/{{IMAGE_TAG}}/${IMAGE_TAG}/g" | kubectl apply -f-
+    make deploy
     ```
     
 1. Grab the Tailscale IP from either the logs or the admin console.
