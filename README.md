@@ -3,6 +3,8 @@
 
 # Instructions
 ## Sidecar
+**Note:** We are using untable releases in this example as the support for storing Tailscale state in k8s secrets is not in a stable release yet and is expected in the 1.16 release.
+
 The current version of can be deployed as a sidecar pod:
 1. Optional: Create the following secret which will automate login.
   You will need to get an auth key from [Tailscale Admin Console](https://login.tailscale.com/admin/authkeys).  
@@ -25,3 +27,4 @@ The current version of can be deployed as a sidecar pod:
     ```
     IMAGE_TAG=ts:latest make sidecar
     ```
+
