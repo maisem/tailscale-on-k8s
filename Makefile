@@ -2,29 +2,18 @@ ifndef IMAGE_TAG
   $(error "IMAGE_TAG is not set")
 endif
 
-ifndef DEST_IP
-  $(error "DEST_IP is not set")
-endif
-
+TRACK ?= "stable"
 ARCH ?= linux/amd64
 ROUTES ?= ""
 
-secret:
-	@kubectl delete -f secret.yaml --ignore-not-found
-	@kubectl create -f secret.yaml
-
 build:
-	@docker build . -t $(IMAGE_TAG)
+	@docker build --build-arg TRACK=$(TRACK) . -t $(IMAGE_TAG)
 
-buildx:
-	@docker buildx build --platform $(ARCH) -t $(IMAGE_TAG) .
-
-push:
+push: build
 	@docker push $(IMAGE_TAG)
 
-deploy:
-	@kubectl apply -f svc.yaml
-	@sed -e "s/{{DEST_IP}}/$(DEST_IP)/g" sts.yaml | sed -e "s/{{ROUTES}}/$(ROUTES)/g" | sed -e "s;{{IMAGE_TAG}};$(IMAGE_TAG);g" | kubectl apply -f-
+rbac:
+	@kubectl apply -f rbac.yaml
 
-pv:
-	@kubectl create -f pv.yaml
+sidecar: rbac
+	@sed -e "s;{{IMAGE_TAG}};$(IMAGE_TAG);g" sidecar.yaml | kubectl create -f-
