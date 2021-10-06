@@ -3,7 +3,7 @@
 
 # Instructions
 ## Sidecar
-The current version of can be deployed as a Sidecard pod:
+The current version of can be deployed as a sidecar pod:
 1. Optional: Create the following secret which will automate login.
   You will need to get an auth key from [Tailscale Admin Console](https://login.tailscale.com/admin/authkeys).  
   If you don't provide you the key, you can still use authenticate by using the url in the logs.
