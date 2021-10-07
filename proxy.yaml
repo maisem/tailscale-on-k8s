@@ -1,8 +1,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: tailscale-forwarder
+  name: proxy
 spec:
+  serviceAccountName: tailscale
   initContainers:
   - name: sysctler
     image: busybox
@@ -17,13 +18,13 @@ spec:
         cpu: 1m
         memory: 1Mi
   containers:
-  - imagePullPolicy: Always
-    name: tailscale
+  - name: tailscale
+    imagePullPolicy: Always
     image: "{{IMAGE_TAG}}"
-    volumeMounts:
-    - name: state
-      mountPath: /var/lib/tailscale
-    env:
+    env: 
+    # Store the state in a k8s secret
+    - name: KUBE_SECRET
+      value: "tailscale"
     - name: USERSPACE
       value: "false"
     - name: AUTH_KEY

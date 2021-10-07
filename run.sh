@@ -1,6 +1,9 @@
 #! /bin/bash
 export PATH=$PATH:/tailscale/bin
 
+# Enable job control.
+set -m
+
 AUTH_KEY="${AUTH_KEY:-}"
 ROUTES="${ROUTES:-}"
 DEST_IP="${DEST_IP:-}"
@@ -56,4 +59,4 @@ if [[ ! -z "${DEST_IP}" ]]; then
 fi
 echo "Tailscale IP: ${TAILSCALE_IP}"
 
-wait
+fg

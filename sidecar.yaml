@@ -1,17 +1,14 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: tailscale-sidecar
+  name: nginx
 spec:
   serviceAccountName: tailscale
   containers:
-  - name: ubuntu
-    image: ubuntu
-    command: ["/bin/bash", "-c", "--"]
-    args:
-    - "while true; do sleep 30; done"
-  - imagePullPolicy: Always
-    name: tailscale
+  - name: nginx
+    image: nginx
+  - name: tailscale
+    imagePullPolicy: Always
     image: "{{IMAGE_TAG}}"
     env:
       # Store the state in a k8s secret
