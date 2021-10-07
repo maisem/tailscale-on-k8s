@@ -15,11 +15,8 @@
      AUTH_KEY: tskey-...
    ```
 
-1. Set the approriate env variables:
+1. Set the image tag:
    ```bash
-   # We are using untable releases in this example as the support for storing Tailscale
-	 # state in k8s secrets is not in a stable release yet and is expected in the 1.16 release.
-   export TRACK=unstable
    export IMAGE_TAG=ts:latest
    ```
 

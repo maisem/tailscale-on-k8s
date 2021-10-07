@@ -1,10 +1,14 @@
-FROM ubuntu
+FROM alpine:3.14
 ARG TRACK=stable
-WORKDIR /tailscale
-RUN apt-get update && apt-get install gnupg curl -y
-RUN curl -fsSL https://pkgs.tailscale.com/$TRACK/ubuntu/focal.gpg | apt-key add -
-RUN curl -fsSL https://pkgs.tailscale.com/$TRACK/ubuntu/focal.list | tee /etc/apt/sources.list.d/tailscale.list
-RUN apt-get update && apt-get install tailscale -y
+ARG ARCH=amd64
 
-COPY run.sh .
-ENTRYPOINT [ "/tailscale/run.sh" ]
+WORKDIR tailscale
+RUN apk add --no-cache ca-certificates jq curl iptables iproute2 bash
+RUN curl -L "https://pkgs.tailscale.com/${TRACK}/$(curl https://pkgs.tailscale.com/${TRACK}/\?mode\=json | jq .Tarballs.${ARCH} -r)" -o tailscale.tgz \
+    && tar xvzf tailscale.tgz \
+    && mv tailscale*/tailscale* /usr/bin \
+    && rm tailscale.tgz \
+    && rm -rf tailscale_*
+
+COPY run.sh /tailscale
+CMD [ "/tailscale/run.sh" ]

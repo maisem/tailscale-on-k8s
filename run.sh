@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /usr/bin/env bash
 export PATH=$PATH:/tailscale/bin
 
 # Enable job control.
