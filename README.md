@@ -1,3 +1,5 @@
+**DEPRECATED**: Kubernetes is now [officailly supported](https://tailscale.com/blog/kubecon-21) by Tailscale.
+
  # Overview
   The goal of this project is to provide a few ways to run Tailscale inside a Kubernetes Cluster
 
